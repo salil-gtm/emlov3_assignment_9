@@ -1,6 +1,10 @@
 # EMLOv3 | Assignment 9
 
-...
+This repo contains the codebase for the GPT docker image which was pushed to AWS ECR and deployed via AWS ECS Fargate.
+After successful launch, URL was updated in the deployment.json file present in the Github Classroom repo.
+
+
+!['autograding'](./assets/autograding.png)
 
 
 ## Past Documentation
