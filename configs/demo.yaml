@@ -1,1 +1,3 @@
-s3_path: ../data/model.script.pt
+bucket_name: 'emlo-v3'
+object_name: 'model.script.pt'
+file_name: 'model.script.pt'

@@ -5,18 +5,25 @@ from omegaconf import DictConfig
 import tiktoken
 import logging
 from typing import Tuple, Dict
+import boto3
 
 log = logging.getLogger(__name__)
 
 
 def demo(cfg: DictConfig) -> Tuple[dict, dict]:
 
-    assert cfg.s3_path
+    assert cfg.bucket_name
+    assert cfg.object_name
+    assert cfg.file_name
+
+    s3 = boto3.client('s3')
 
     log.info("Running Demo")
 
-    log.info(f"Instantiating scripted model <{cfg.s3_path}>")
-    model = torch.jit.load(cfg.s3_path)
+    s3.download_file(cfg.bucket_name, cfg.object_name, cfg.file_name)
+
+    log.info(f"Instantiating scripted model <{cfg.file_name}>")
+    model = torch.jit.load(cfg.file_name)
 
     log.info(f"Loaded Model: {model}")
 
@@ -45,13 +52,13 @@ def demo(cfg: DictConfig) -> Tuple[dict, dict]:
 
     demo = gr.Interface(
         fn=generate,
-        inputs=gr.inputs.Textbox(lines=5, label="Prompt"),
+        inputs=[gr.inputs.Textbox(lines=5, label="Prompt"),gr.Slider(2, 512, value=256, label="Output Token Length", info="Range: 2 and 512")],
         outputs=gr.outputs.Textbox(label="Generated Text"),
         title="GPT Gradio Demo",
         description="Generate text from a prompt using a custom trained GPT model.",
     )
 
-    demo.launch(server_name= "0.0.0.0", server_port=8080, share=True)
+    demo.launch(server_name= "0.0.0.0", server_port=80)
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="demo.yaml")
 def main(cfg: DictConfig) -> None:

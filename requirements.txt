@@ -12,3 +12,4 @@ hydra-colorlog==1.2.0
 
 # --------- deployment --------- #
 gradio
+boto3
